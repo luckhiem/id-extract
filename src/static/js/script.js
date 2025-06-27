@@ -448,6 +448,54 @@ function downloadHistory() {
   });
 }
 
+// Function to handle new image upload
+function uploadNewImage() {
+  // Reset the file input
+  input.value = '';
+  
+  // Reset the drag area to its original state
+  dropArea.classList.remove('active');
+  dropArea.innerHTML = `
+    <div class="icon">
+      <i class="fas fa-id-card"></i>
+    </div>
+    <span class="header">Drag & Drop</span>
+    <span class="header">or <span class="button">Click here to browse</span></span>
+    <input type="file" name="file" hidden />
+    <span class="support">Supports: JPEG, JPG, PNG</span>
+    <span class="note">Image of your ID card should be visible at 4 corners and make sure it is front side </span>
+  `;
+  
+  // Re-attach event listeners to the new button
+  const newButton = dropArea.querySelector('.button');
+  const newInput = dropArea.querySelector('input');
+  
+  newButton.onclick = () => {
+    newInput.click();
+  };
+  
+  // Re-attach file input change listener
+  newInput.addEventListener('change', function () {
+    file = this.files[0];
+    dropArea.classList.add('active');
+    displayFile();
+  });
+  
+  // Reset file variable
+  file = null;
+  
+  // Clear the extracted data display
+  document.querySelector('.person__img').innerHTML = '';
+  document.querySelector('.info__id').innerHTML = 'Số (ID): ';
+  document.querySelector('.info__name').innerHTML = 'Họ và tên (Full name): ';
+  document.querySelector('.info__date').innerHTML = 'Ngày sinh (Date of birth): ';
+  document.querySelector('.info__sex').innerHTML = 'Giới tính (Sex): ';
+  document.querySelector('.info__nation').innerHTML = 'Quốc tịch (Nationality): ';
+  document.querySelector('.info__hometown').innerHTML = 'Quê quán (Place of origin): ';
+  document.querySelector('.info__address').innerHTML = 'Nơi thường trú (Place of residence): ';
+  document.querySelector('.info__doe').innerHTML = 'Ngày hết hạn (Date of expiry): ';
+}
+
 // Initialize history when page loads
 document.addEventListener('DOMContentLoaded', function() {
   initializeHistory();

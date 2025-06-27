@@ -426,6 +426,20 @@ h3 {
     background-color: #255b8a;
 }
 
+.btn-new-image {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.btn-new-image:hover {
+    cursor: pointer;
+    background-color: #1e7e34;
+}
+
 .btn-download {
     padding: 8px 16px;
     background-color: #337ab7;
