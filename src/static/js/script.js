@@ -367,34 +367,28 @@ function addToHistory(data) {
 
 // Update history display in UI
 function updateHistoryDisplay() {
-  const historyContainer = document.getElementById('historyContainer');
-  if (!historyContainer) return;
-  
+  const historyTableBody = document.getElementById('historyTableBody');
+  if (!historyTableBody) return;
+
   if (extractionHistory.length === 0) {
-    historyContainer.innerHTML = '<p class="no-history">No extraction history available.</p>';
+    historyTableBody.innerHTML = '<tr><td colspan="5" class="no-history">No extraction history available.</td></tr>';
     return;
   }
-  
-  let historyHTML = '<div class="history-list">';
+
+  let rowsHTML = '';
   extractionHistory.forEach((item, index) => {
-    historyHTML += `
-      <div class="history-item">
-        <div class="history-header">
-          <span class="history-name">${item.name || 'Unknown'}</span>
-          <span class="history-date">${item.extraction_date}</span>
-          <button class="btn-remove-history" onclick="removeFromHistory(${index})">Remove</button>
-        </div>
-        <div class="history-details">
-          <span><strong>ID:</strong> ${item.id || 'N/A'}</span>
-          <span><strong>DOB:</strong> ${item.date_of_birth || 'N/A'}</span>
-          <span><strong>Sex:</strong> ${item.sex || 'N/A'}</span>
-        </div>
-      </div>
+    rowsHTML += `
+      <tr>
+        <td>${item.name || 'Unknown'}</td>
+        <td>${item.id || 'N/A'}</td>
+        <td>${item.date_of_birth || 'N/A'}</td>
+        <td>${item.sex || 'N/A'}</td>
+        <td>${item.extraction_date || ''}</td>
+        <td><button class="btn-remove-history" onclick="removeFromHistory(${index})">Remove</button></td>
+      </tr>
     `;
   });
-  historyHTML += '</div>';
-  
-  historyContainer.innerHTML = historyHTML;
+  historyTableBody.innerHTML = rowsHTML;
 }
 
 // Remove item from history
