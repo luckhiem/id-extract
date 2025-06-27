@@ -67,46 +67,61 @@
             </div>
         </div>
         <div class="main">
-            <div class="container">
-                <form class="get_img">
-                    <h3>Upload your image :</h3>
-                    <div class="drag-area">
-                            <!-- <button id='close'>close</button> -->
-                        <div class="icon">
-                            <i class="fas fa-id-card"></i>
+            <div class="row-sections">
+                <div class="container">
+                    <form class="get_img">
+                        <h3>Upload your image :</h3>
+                        <div class="drag-area">
+                                <!-- <button id='close'>close</button> -->
+                            <div class="icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <span class="header">Drag & Drop</span>
+                            <span class="header">or <span class="button">Click here to browse</span></span>
+                            <input type="file" name="file" hidden />
+                            <span class="support">Supports: JPEG, JPG, PNG</span>
+                            <span class="note">Image of your ID card should be visible at 4 corners and make sure it is front side </span>
                         </div>
-                        <span class="header">Drag & Drop</span>
-                        <span class="header">or <span class="button">Click here to browse</span></span>
-                        <input type="file" name="file" hidden />
-                        <span class="support">Supports: JPEG, JPG, PNG</span>
-                        <span class="note">Image of your ID card should be visible at 4 corners and make sure it is front side </span>
-                    </div>
 
-                    <div class="container__submit">
+                        <div class="container__submit">
+                            <div>
+                                <input type="submit" value="Extract" class="btn-extract" id="submitbtn" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="person">
+                    <div class="container__download">
                         <div>
-                            <input type="submit" value="Extract" class="btn-extract" id="submitbtn" />
+                            <input type="submit" onclick='downloadExtracted();' value="Download Excel" class="btn-download" id="downloadbtn" />
                         </div>
                     </div>
-                </form>
-            </div>
-
-            <div class="person">
-                <div class="container__download">
-                    <div>
-                        <input type="submit" onclick='downloadExtracted();' value="Download Excel" class="btn-download" id="downloadbtn" />
+                    <h3>Your ID information:</h3>
+                    <div class="person__img"></div>
+                    <div class="person__info">
+                        <span class="info__id">Số (ID): </span><br />
+                        <span class="info__name">Họ và tên (Full name): </span><br />
+                        <span class="info__date">Ngày sinh (Date of birth): </span><br />
+                        <span class="info__sex">Giới tính (Sex): </span><br />
+                        <span class="info__nation">Quốc tịch (Nationality): </span><br />
+                        <span class="info__hometown">Quê quán (Place of origin): </span><br />
+                        <span class="info__address">Nơi thường trú (Place of residence): </span><br />
+                        <span class="info__doe">Ngày hết hạn (Date of expiry): </span><br />
                     </div>
                 </div>
-                <h3>Your ID information:</h3>
-                <div class="person__img"></div>
-                <div class="person__info">
-                    <span class="info__id">Số (ID): </span><br />
-                    <span class="info__name">Họ và tên (Full name): </span><br />
-                    <span class="info__date">Ngày sinh (Date of birth): </span><br />
-                    <span class="info__sex">Giới tính (Sex): </span><br />
-                    <span class="info__nation">Quốc tịch (Nationality): </span><br />
-                    <span class="info__hometown">Quê quán (Place of origin): </span><br />
-                    <span class="info__address">Nơi thường trú (Place of residence): </span><br />
-                    <span class="info__doe">Ngày hết hạn (Date of expiry): </span><br />
+            </div>
+            <!-- History Section -->
+            <div class="history-section">
+                <div class="history-header">
+                    <h3>Extraction History</h3>
+                    <div class="history-controls">
+                        <button onclick="downloadHistory()" class="btn-history-download">Download History</button>
+                        <button onclick="clearAllHistory()" class="btn-history-clear">Clear All</button>
+                    </div>
+                </div>
+                <div id="historyContainer" class="history-container">
+                    <!-- History items will be populated here -->
                 </div>
             </div>
         </div>

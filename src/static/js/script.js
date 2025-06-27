@@ -4,8 +4,9 @@ const dragText = document.querySelector('.header');
 let button = dropArea.querySelector('.button');
 let input = dropArea.querySelector('input');
 
-let file;
-let dataExtracted;
+let file = null;
+let dataExtracted = [];
+let extractionHistory = [];
 
 let menu_btn =  document.querySelector("#menu-btn");
 let sidebar = document.querySelector(".sidebar");
@@ -153,6 +154,10 @@ xhr.onreadystatechange = function(e) {
       address: data[6],
       date_of_expiry: data[7]
     }];
+    
+    // Add to history
+    addToHistory(data);
+    
     Swal.fire({
       icon: 'success',
       title: 'Success',
@@ -255,7 +260,7 @@ convertArrayOfObjectsToExcel = async (args) => {
 
 downloadExcel = async (args) => {
   const wb = await convertArrayOfObjectsToExcel({
-    data: dataExtracted
+    data: args.data
   });
   
   if (!wb) {
@@ -278,6 +283,7 @@ downloadExcel = async (args) => {
 function downloadExtracted(){
   // Use Excel generation instead of CSV
   downloadExcel({
+    data: dataExtracted,
     filename: "extracted_data.xlsx"
   });
   
@@ -324,3 +330,126 @@ function displayFile() {
     file = null;
   }
 }
+
+// Initialize history from localStorage
+function initializeHistory() {
+  const savedHistory = localStorage.getItem('idExtractionHistory');
+  if (savedHistory) {
+    extractionHistory = JSON.parse(savedHistory);
+  }
+}
+
+// Save history to localStorage
+function saveHistory() {
+  localStorage.setItem('idExtractionHistory', JSON.stringify(extractionHistory));
+}
+
+// Add new extraction to history
+function addToHistory(data) {
+  const extraction = {
+    id: data[0],
+    name: data[1],
+    date_of_birth: data[2],
+    sex: data[3],
+    nationality: data[4],
+    hometown: data[5],
+    address: data[6],
+    date_of_expiry: data[7],
+    timestamp: new Date().toISOString(),
+    extraction_date: new Date().toLocaleString()
+  };
+  
+  extractionHistory.unshift(extraction); // Add to beginning of array
+  
+  // Keep only last 100 extractions to prevent localStorage overflow
+  if (extractionHistory.length > 100) {
+    extractionHistory = extractionHistory.slice(0, 100);
+  }
+  
+  saveHistory();
+  updateHistoryDisplay();
+}
+
+// Update history display in UI
+function updateHistoryDisplay() {
+  const historyContainer = document.getElementById('historyContainer');
+  if (!historyContainer) return;
+  
+  if (extractionHistory.length === 0) {
+    historyContainer.innerHTML = '<p class="no-history">No extraction history available.</p>';
+    return;
+  }
+  
+  let historyHTML = '<div class="history-list">';
+  extractionHistory.forEach((item, index) => {
+    historyHTML += `
+      <div class="history-item">
+        <div class="history-header">
+          <span class="history-name">${item.name || 'Unknown'}</span>
+          <span class="history-date">${item.extraction_date}</span>
+          <button class="btn-remove-history" onclick="removeFromHistory(${index})">Remove</button>
+        </div>
+        <div class="history-details">
+          <span><strong>ID:</strong> ${item.id || 'N/A'}</span>
+          <span><strong>DOB:</strong> ${item.date_of_birth || 'N/A'}</span>
+          <span><strong>Sex:</strong> ${item.sex || 'N/A'}</span>
+        </div>
+      </div>
+    `;
+  });
+  historyHTML += '</div>';
+  
+  historyContainer.innerHTML = historyHTML;
+}
+
+// Remove item from history
+function removeFromHistory(index) {
+  extractionHistory.splice(index, 1);
+  saveHistory();
+  updateHistoryDisplay();
+}
+
+// Clear all history
+function clearAllHistory() {
+  if (confirm('Are you sure you want to clear all extraction history?')) {
+    extractionHistory = [];
+    saveHistory();
+    updateHistoryDisplay();
+    Swal.fire({
+      icon: 'success',
+      title: 'History Cleared',
+      text: 'All extraction history has been cleared.',
+      timer: 2000
+    });
+  }
+}
+
+// Download complete history
+function downloadHistory() {
+  if (extractionHistory.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'No History',
+      text: 'No extraction history available to download.'
+    });
+    return;
+  }
+  
+  downloadExcel({
+    data: extractionHistory,
+    filename: `extraction_history_${new Date().toISOString().split('T')[0]}.xlsx`
+  });
+  
+  Swal.fire({
+    icon: 'success',
+    title: 'History Downloaded',
+    text: `Downloaded ${extractionHistory.length} extraction records.`,
+    timer: 2000
+  });
+}
+
+// Initialize history when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  initializeHistory();
+  updateHistoryDisplay();
+});
