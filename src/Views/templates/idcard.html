@@ -23,23 +23,11 @@
             </div>
             <ul class="nav-list">
                 <li>
-                        <i class='bx bx-search-alt-2' ></i>
-                        <input type="text" placeholder="Search here...">
-                    <!-- <span class="tooltip">Search</span> -->
-                </li>
-                <li>
-                    <a href="home">
-                        <i class='bx bx-home' ></i>
-                        <span class="links-name">Home</span>
-                    </a>
-                    <span class="tooltip">Home</span>
-                </li>
-                <li>
-                    <a href="">
+                    <a href="/">
                         <i class='bx bx-id-card' ></i>
                         <span class="links-name">ID Extractor</span>
                     </a>
-                    <span class="tooltip"> ID Extractor</span>
+                    <span class="tooltip">ID Extractor</span>
                 </li>
                 <li>
                     <a href="ekyc">
@@ -101,14 +89,16 @@
                     <h3>Your ID information:</h3>
                     <div class="person__img"></div>
                     <div class="person__info">
-                        <span class="info__id">Số (ID): </span><br />
-                        <span class="info__name">Họ và tên (Full name): </span><br />
-                        <span class="info__date">Ngày sinh (Date of birth): </span><br />
-                        <span class="info__sex">Giới tính (Sex): </span><br />
-                        <span class="info__nation">Quốc tịch (Nationality): </span><br />
-                        <span class="info__hometown">Quê quán (Place of origin): </span><br />
-                        <span class="info__address">Nơi thường trú (Place of residence): </span><br />
-                        <span class="info__doe">Ngày hết hạn (Date of expiry): </span><br />
+                        <table class="info-table">
+                            <tr><td class="info-label"><strong>Số (ID):</strong></td><td class="info-value" id="id-value"></td></tr>
+                            <tr><td class="info-label"><strong>Họ và tên (Full name):</strong></td><td class="info-value" id="name-value"></td></tr>
+                            <tr><td class="info-label"><strong>Ngày sinh (Date of birth):</strong></td><td class="info-value" id="date-value"></td></tr>
+                            <tr><td class="info-label"><strong>Giới tính (Sex):</strong></td><td class="info-value" id="sex-value"></td></tr>
+                            <tr><td class="info-label"><strong>Quốc tịch (Nationality):</strong></td><td class="info-value" id="nation-value"></td></tr>
+                            <tr><td class="info-label"><strong>Quê quán (Place of origin):</strong></td><td class="info-value" id="hometown-value"></td></tr>
+                            <tr><td class="info-label"><strong>Nơi thường trú (Place of residence):</strong></td><td class="info-value" id="address-value"></td></tr>
+                            <tr><td class="info-label"><strong>Ngày hết hạn (Date of expiry):</strong></td><td class="info-value" id="doe-value"></td></tr>
+                        </table>
                     </div>
                 </div>
             </div>

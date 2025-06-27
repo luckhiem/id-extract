@@ -10,17 +10,12 @@ let extractionHistory = [];
 
 let menu_btn =  document.querySelector("#menu-btn");
 let sidebar = document.querySelector(".sidebar");
-let search_btn = document.querySelector(".bx-search-alt-2");
 let imgForm = document.querySelector(".get_img");
 
 menu_btn.onclick = function(){
   sidebar.classList.toggle("active");
+  document.querySelector('.app').classList.toggle("sidebar-active");
 }
-
-search_btn.onclick = function(){
-  sidebar.classList.toggle("active");
-}
-
 
 button.onclick = () => {
   input.click();
@@ -136,14 +131,14 @@ xhr.onreadystatechange = function(e) {
     const data = JSON.parse(xhr.responseText).data;
     const update =  new Date();
     document.querySelector('.person__img').innerHTML = `<img src="/static/results/0.jpg?v=${update.getTime()}" />`; // To update avoid using image from cache
-    document.querySelector('.info__id').innerHTML = `Số (ID): ${data[0]}`;
-    document.querySelector('.info__name').innerHTML = `Họ và tên (Full name): ${data[1]}`;
-    document.querySelector('.info__date').innerHTML = `Ngày sinh (Date of birth): ${data[2]}`;
-    document.querySelector('.info__sex').innerHTML = `Giới tính (Sex): ${data[3]}`;
-    document.querySelector('.info__nation').innerHTML = `Quốc tịch (Nationality): ${data[4]}`;
-    document.querySelector('.info__hometown').innerHTML = `Quê quán (Place of origin): ${data[5]}`;
-    document.querySelector('.info__address').innerHTML = `Nơi thường trú (Place of residence): ${data[6]}`;
-    document.querySelector('.info__doe').innerHTML = `Ngày hết hạn (Date of expiry) : ${data[7]}`;
+    document.getElementById('id-value').textContent = data[0];
+    document.getElementById('name-value').textContent = data[1];
+    document.getElementById('date-value').textContent = data[2];
+    document.getElementById('sex-value').textContent = data[3];
+    document.getElementById('nation-value').textContent = data[4];
+    document.getElementById('hometown-value').textContent = data[5];
+    document.getElementById('address-value').textContent = data[6];
+    document.getElementById('doe-value').textContent = data[7];
     dataExtracted = [{
       id: data[0],
       name: data[1],
@@ -486,14 +481,14 @@ function uploadNewImage() {
   
   // Clear the extracted data display
   document.querySelector('.person__img').innerHTML = '';
-  document.querySelector('.info__id').innerHTML = 'Số (ID): ';
-  document.querySelector('.info__name').innerHTML = 'Họ và tên (Full name): ';
-  document.querySelector('.info__date').innerHTML = 'Ngày sinh (Date of birth): ';
-  document.querySelector('.info__sex').innerHTML = 'Giới tính (Sex): ';
-  document.querySelector('.info__nation').innerHTML = 'Quốc tịch (Nationality): ';
-  document.querySelector('.info__hometown').innerHTML = 'Quê quán (Place of origin): ';
-  document.querySelector('.info__address').innerHTML = 'Nơi thường trú (Place of residence): ';
-  document.querySelector('.info__doe').innerHTML = 'Ngày hết hạn (Date of expiry): ';
+  document.getElementById('id-value').textContent = '';
+  document.getElementById('name-value').textContent = '';
+  document.getElementById('date-value').textContent = '';
+  document.getElementById('sex-value').textContent = '';
+  document.getElementById('nation-value').textContent = '';
+  document.getElementById('hometown-value').textContent = '';
+  document.getElementById('address-value').textContent = '';
+  document.getElementById('doe-value').textContent = '';
 }
 
 // Initialize history when page loads
