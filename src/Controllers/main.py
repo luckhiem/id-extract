@@ -1,10 +1,12 @@
 import os
+import csv
+import io
 
 import numpy as np
 import yolov5
 from fastapi import File, Form, Request, UploadFile
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from PIL import Image
 from vietocr.tool.config import Cfg
 from vietocr.tool.predictor import Predictor
@@ -191,8 +193,43 @@ async def extract_info(ekyc=False, path_id=None):
 @app.post("/download")
 async def download(file: str = Form(...)):
     if file != "undefined":
-        noti = "Download file successfully!"
-        return JSONResponse(status_code=201, content={"message": noti})
+        # Create CSV data from the extracted information
+        # This would typically come from a session or database
+        # For now, we'll create a sample CSV structure
+        
+        # Create CSV in memory
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Write header
+        writer.writerow([
+            'ID Number',
+            'Full Name', 
+            'Date of Birth',
+            'Sex',
+            'Nationality',
+            'Place of Origin',
+            'Place of Residence',
+            'Date of Expiry'
+        ])
+        
+        # Write sample data (in real implementation, this would come from session)
+        # For now, we'll write empty row as placeholder
+        writer.writerow(['', '', '', '', '', '', '', ''])
+        
+        # Get the CSV content
+        csv_content = output.getvalue()
+        output.close()
+        
+        # Add BOM for proper Unicode support
+        csv_content = '\ufeff' + csv_content
+        
+        # Create streaming response
+        return StreamingResponse(
+            io.BytesIO(csv_content.encode('utf-8-sig')),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=extracted_data.csv"}
+        )
     else:
         error = "No file to download!"
         return JSONResponse(status_code=405, content={"message": error})

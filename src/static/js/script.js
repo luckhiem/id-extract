@@ -149,8 +149,8 @@ xhr.onreadystatechange = function(e) {
       date_of_birth: data[2],
       sex: data[3],
       nationality: data[4],
-      hometown: `"${data[5]}"`,
-      address: `"${data[6]}"`,
+      hometown: data[5],
+      address: data[6],
       date_of_expiry: data[7]
     }];
     Swal.fire({
@@ -171,21 +171,7 @@ xhr.onreadystatechange = function(e) {
     })
   }
   else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 201){
-    downloadCSV({
-            filename: "user_data.csv"
-          });
-    const downloadSuccess = Swal.mixin({
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-    })
-
-    downloadSuccess.fire({
-      icon: 'success',
-      title: 'Download extracted data successfully!'
-    })
+    downloadExtracted();
   }
 }
 
@@ -217,59 +203,97 @@ imgForm.addEventListener("submit", function(e) {
   xhr.send(formData);
 });
 
-convertArrayOfObjectsToCSV = args => {
+// Add SheetJS library for Excel generation
+function loadSheetJS() {
+  return new Promise((resolve, reject) => {
+    if (window.XLSX) {
+      resolve(window.XLSX);
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    script.onload = () => resolve(window.XLSX);
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+convertArrayOfObjectsToExcel = async (args) => {
   const data = args.data;
   if (!data || !data.length) return;
 
-  const columnDelimiter = args.columnDelimiter || ',';
-  const lineDelimiter = args.lineDelimiter || '\n';
+  try {
+    const XLSX = await loadSheetJS();
+    
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+    
+    // Set column widths for better readability
+    const colWidths = [
+      { wch: 15 }, // ID Number
+      { wch: 25 }, // Full Name
+      { wch: 15 }, // Date of Birth
+      { wch: 10 }, // Sex
+      { wch: 15 }, // Nationality
+      { wch: 30 }, // Place of Origin
+      { wch: 40 }, // Place of Residence
+      { wch: 15 }  // Date of Expiry
+    ];
+    ws['!cols'] = colWidths;
+    
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "ID Data");
+    
+    return wb;
+  } catch (error) {
+    console.error('Error generating Excel file:', error);
+    return null;
+  }
+}
 
-  const keys = Object.keys(data[0]);
-
-  let result = '';
-  result += keys.join(columnDelimiter);
-  result += lineDelimiter;
-
-  data.forEach(item => {
-    ctr = 0;
-    keys.forEach(key => {
-      if (ctr > 0) result += columnDelimiter;
-      result += item[key];
-      ctr++;
-    });
-    result += lineDelimiter;
+downloadExcel = async (args) => {
+  const wb = await convertArrayOfObjectsToExcel({
+    data: dataExtracted
   });
+  
+  if (!wb) {
+    console.error('Failed to generate Excel file');
+    return;
+  }
 
-  return result;
+  const filename = args.filename || 'extracted_data.xlsx';
+
+  try {
+    // Generate Excel file
+    XLSX.writeFile(wb, filename);
+  } catch (error) {
+    console.error('Error downloading Excel file:', error);
+    // Fallback to CSV if Excel fails
+    downloadCSV({ filename: filename.replace('.xlsx', '.csv') });
+  }
 }
 
 function downloadExtracted(){
-  const URL = '/download';
-  const formData = new FormData();
-  formData.append('file', dataExtracted);
-  xhr.open('POST', URL, true);
-  xhr.send(formData);
-}
-
-downloadCSV = args => {
-
-  let csv = convertArrayOfObjectsToCSV({
-    data: dataExtracted
+  // Use Excel generation instead of CSV
+  downloadExcel({
+    filename: "extracted_data.xlsx"
   });
-  if (!csv) return;
+  
+  // Show success message
+  const downloadSuccess = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+  })
 
-  const filename = args.filename || 'export.csv';
-
-  if (!csv.match(/^data:text\/csv/i)) {
-    csv = 'data:text/csv;charset=utf-8,' + csv;
-  }
-
-  const data = encodeURI(csv);
-
-  const link = document.createElement('a');
-  link.setAttribute('href', data);
-  link.setAttribute('download', filename);
-  link.click();
+  downloadSuccess.fire({
+    icon: 'success',
+    title: 'Download Excel file successfully!'
+  })
 }
 
 function displayFile() {
